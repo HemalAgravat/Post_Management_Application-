@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('phone_no')->unique();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('status')->default('inactive')->comment('User status, initially inactive');
+            $table->string('profile_url')->nullable();
+            $table->string('email_verification_token')->nullable()->comment('Token used to verify the user email');
             $table->timestamps();
+
         });
     }
 

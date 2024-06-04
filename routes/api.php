@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\PostController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('register', [UserController::class, 'register']);
+Route::get('verify-email/{token}', [UserController::class, 'verifyEmail']);
+Route::apiResource('posts', PostController::class);
 Route::get('/post',function(){
     return "Post_Management_Application";
 });
