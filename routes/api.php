@@ -20,9 +20,3 @@ use App\Http\Controllers\API\PostController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('register', [UserController::class, 'register']);
-Route::get('verify-email/{token}', [UserController::class, 'verifyEmail']);
-Route::apiResource('posts', PostController::class);
-Route::get('/post',function(){
-    return "Post_Management_Application";
-});
