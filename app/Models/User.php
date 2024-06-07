@@ -3,13 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    
+    /**
+     * table
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -17,10 +26,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'email', 'phone_no', 'password', 'status', 'profile_url', 'email_verification_token','uuid_column'
     ];
+
+    public $incrementing = true;
+
+    public $timestamps = true;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -39,5 +50,26 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'uuid_column' => 'uuid', // Cast 'uuid_column' to a UUID
     ];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->uuid_column = Str::uuid(); // Automatically generate UUID
+        });
+    }
+
+    public static function generateVerificationCode(): string
+    {
+        return Str::random(40);
+    }
+
 }
