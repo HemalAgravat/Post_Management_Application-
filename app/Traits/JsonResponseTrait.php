@@ -2,23 +2,45 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\JsonResponse;
+
 trait JsonResponseTrait
 {
-    
-    public function successResponse($data, $message = null, $statusCode = 200)
+
+    /**
+     * Generate a JSON response for successful operations.
+     *
+     * @param  mixed  $data
+     * @param  string  $messageKey
+     * @param  int  $statusCode
+     * @return JsonResponse
+     */
+    public function successResponse($data, $messageKey = 'success', $statusCode = 200): JsonResponse
     {
         return response()->json([
             'success' => true,
-            'message' => $message,
+            'message' => trans($messageKey),
+            "message_code"=> $messageKey,
             'data' => $data,
         ], $statusCode);
     }
-   
-    public function errorResponse($message, $statusCode = 500)
+
+    /**
+     * Generate a JSON response for errors.
+     *
+     * @param  string  $message
+     * @param  string  $messageKey
+     * @param  int  $statusCode
+     * @return JsonResponse
+     */
+    public function errorResponse( $messageKey = 'error', $statusCode = 500): JsonResponse
     {
         return response()->json([
             'success' => false,
-            'message' => $message,
+            'message' => trans($messageKey),
+            "message_code"=> $messageKey,
         ], $statusCode);
     }
+
+  
 }
