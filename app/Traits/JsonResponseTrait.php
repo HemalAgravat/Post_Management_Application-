@@ -41,6 +41,28 @@ trait JsonResponseTrait
             "message_code"=> $messageKey,
         ], $statusCode);
     }
+    
+    /**
+     * Generate a JSON response for validation errors.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validation
+     * @param  string  $messageKey
+     * @param  int  $statusCode
+     * @return JsonResponse
+     */
+    public function validationError($validation, $messageKey = 'VALIDATION_ERROR', $statusCode = 422): JsonResponse
+    {
+        $validationErrors = $validation->errors();
 
-  
+        $errorResponse = [
+            'success' => false,
+            'message' => trans($messageKey),
+            'message_code' => $messageKey,
+            'status_code' => $statusCode,
+            'errors' => $validationErrors,
+        ];
+
+        return response()->json(['errorResponse' => $errorResponse], $statusCode);
+    }
+    
 }
