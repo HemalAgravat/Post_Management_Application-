@@ -64,12 +64,12 @@ class PostController extends Controller
     
         try {
             // Create the post
-            // $user=auth()->user();
+            $user=auth()->user();
             $post = Post::create([
                 'title' => $request->title,
                 'description' => $request->description,
                 'images' => $uploadedImages,
-                'user_id' => 1,
+                'user_id' => $user->id,
                 'post_type' => $request->post_type
             ]);
 
