@@ -2,11 +2,14 @@
 
 namespace App\Exceptions;
 
+use App\Traits\JsonResponseTrait;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use JsonResponseTrait;
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -43,6 +46,12 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        // Render the given validation exception.
+
+        $this->renderable(function (ValidationException $e) {
+            return $this->validationError($e->validator, 'messages.validation.failed', 422);
         });
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/post',function(){
     return "Post_Management_Application";
 });
+
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
