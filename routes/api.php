@@ -22,4 +22,5 @@ Route::get('/post',function(){
     return "Post_Management_Application";
 });
 
-Route::resource('/posts',PostController::class);
+Route::resource('/posts',PostController::class)->middleware('auth:api');
+

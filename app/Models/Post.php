@@ -40,7 +40,7 @@ class Post extends Model
      */
     protected $casts = [
         'images' => 'array', // Ensure images are cast to an array
-        'uuid_column' => 'uuid',
+        'uuid_column' => 'string',
     ];
 
     public $incrementing = true;

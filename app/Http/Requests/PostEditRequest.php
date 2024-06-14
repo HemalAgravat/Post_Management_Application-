@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostAddRequest extends FormRequest
+class PostEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,12 @@ class PostAddRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ["required","string","max:100"],
-            'description' => ["required","string"],
-            'images' => ["required","array"],
+            'title' => ["sometimes","string","max:100"],
+            'description' => ["sometimes","string"],
+            'images' => ["sometimes","array"],
             'images.*' => ["file","image"],
-            'post_type' => ["required","in:1,2,3,4"]
+            'post_type' => ["sometimes","in:1,2,3,4"],
+            'status' => ["sometimes","in:0,1"]
         ];
     }
 
@@ -38,21 +39,18 @@ class PostAddRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.required' => __('messages.post_messages.post_validation.required', ['attribute' => 'title']),
             'title.string' => __('messages.post_messages.post_validation.string', ['attribute' => 'title']),
             'title.max' => __('messages.post_messages.post_validation.max', ['attribute' => 'title', 'max' => 100]),
             
-            'description.required' => __('messages.post_messages.post_validation.required', ['attribute' => 'description']),
             'description.string' => __('messages.post_messages.post_validation.string', ['attribute' => 'description']),
             
-            'images.required' => __('messages.post_messages.post_validation.required', ['attribute' => 'images']),
             'images.array' => __('messages.post_messages.post_validation.array', ['attribute' => 'images']),
-            
             'images.*.file' => __('messages.post_messages.post_validation.file', ['attribute' => 'image']),
             'images.*.image' => __('messages.post_messages.post_validation.image', ['attribute' => 'image']),
             
-            'post_type.required' => __('messages.post_messages.post_validation.required', ['attribute' => 'post type']),
             'post_type.in' => __('messages.post_messages.post_validation.in', ['attribute' => 'post type']),
+
+            'status.in' => __('messages.post_messages.post_validation.in', ['attribute' => 'status']),
         ];
     }
 }
