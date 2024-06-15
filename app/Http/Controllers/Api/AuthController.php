@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Mail\SendMail;
 use App\Models\User;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -105,4 +107,44 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Handle Login Request.
+     *
+     * @param  LoginRequest  $request
+     * @return JsonResponse
+     */
+    public function login(LoginRequest $request)
+    {
+        // Retrieve email and password from the request
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
+            return $this->errorResponse('messages.error.login.invalid_credentials', 401);
+        }
+
+        // Retrieve authenticated user instance
+        $user = Auth::user();
+
+        if ($user->status == 0) {
+            $errorMessage = 'messages.error.login.user_not_active';
+            $statusCode = 403;
+        } elseif (is_null($user->email_verified_at)) {
+            $errorMessage = 'messages.error.login.email_not_verified';
+            $statusCode = 403;
+        } else {
+            // Create a Login token for the user
+            $token = $user->createToken('Login')->accessToken;
+
+            $userData = User::select('id', 'name', 'email', 'created_at', 'updated_at')
+                ->where('id', $user->id)
+                ->first();
+
+            return $this->successResponse([
+                'token' => $token,
+                'data' => $userData
+            ], 'messages.user.login', 200);
+        }
+
+        return $this->errorResponse($errorMessage, $statusCode);
+    }
 }

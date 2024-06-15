@@ -23,5 +23,6 @@ Route::get('/post',function(){
 });
 
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('sendemail/verifyEmail/{token}', [AuthController::class, 'verifyEmail'])->name('emailvarification');
