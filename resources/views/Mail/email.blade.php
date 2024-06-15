@@ -205,15 +205,19 @@ h6 {
             <tr>
                 <td class="hero bg_white" style="padding: 2em 0 4em 0;">
                     <table>
-                            <th>
-                                <div class="text" style="padding: 0 2.5em; text-align: center; margin-top: -50px;">
-                                    <h2>Please verify your email</h2>
-                                    <h3 style="margin-top: 10px; margin-bottom: 20px;">Hi {{ $user->name }}, <br>You're almost set to start enjoying. Simply click the
-                                        link below to verify your email address and get started. The link expires in 5 minutes.</h3>
-                                    <a href="{{ $verificationUrl }}" class="custom-btn-danger"
-                                        style="width: 200px; font-size:25px;">Confirm</a>
-                                </div>
-                            </th>
+                        <th>
+                            <div class="text" style="padding: 0 2.5em; text-align: center; margin-top: -50px;">
+                                <h2>{{ __('labels.mail.verify_email') }}</h2>
+                                <h3 style="margin-top: 10px; margin-bottom: 20px;">
+                                    {{ __('labels.mail.content_name', ['name' => $data['name']]) }}
+                                    <br>
+                                    {{ __('labels.mail.content') }}
+                                </h3>
+                                <a href="http://127.0.0.1:8000/api/sendemail/verifyEmail/{{ $data['token'] }}" class="custom-btn-danger" style="width: 200px; font-size:25px;">
+                                    {{ __('labels.mail.confirm') }}
+                                </a>
+                            </div>
+                        </th>
                     </table>
                 </td>
             </tr>

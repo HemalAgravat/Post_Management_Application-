@@ -1,10 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Auth\Register;
-use App\Http\Controllers\Api\Auth\Login;
-use App\Http\Controllers\Api\emailvarification;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +22,6 @@ Route::get('/post',function(){
     return "Post_Management_Application";
 });
 
-Route::post('/register', [Register::class, 'register']);
-Route::post('/login', [Login::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('email/verify/{token}', [emailvarification::class, 'verify'])->name('emailvarification');
+Route::get('sendemail/verifyEmail/{token}', [AuthController::class, 'verifyEmail'])->name('emailvarification');
