@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Post\PostController;
@@ -18,9 +19,10 @@ use App\Http\Controllers\API\Post\PostController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/post',function(){
-    return "Post_Management_Application";
-});
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:api')->delete('/logout', [AuthController::class, 'logout']);
+Route::get('sendemail/verifyEmail/{token}', [AuthController::class, 'verifyEmail'])->name('emailvarification');
 Route::resource('/posts',PostController::class)->middleware('auth:api');
 
