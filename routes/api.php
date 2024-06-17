@@ -24,5 +24,6 @@ Route::get('/post',function(){
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:api')->delete('/logout', [AuthController::class, 'logout']);
 
 Route::get('sendemail/verifyEmail/{token}', [AuthController::class, 'verifyEmail'])->name('emailvarification');

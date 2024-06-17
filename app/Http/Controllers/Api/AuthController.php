@@ -147,4 +147,28 @@ class AuthController extends Controller
 
         return $this->errorResponse($errorMessage, $statusCode);
     }
+    /**
+     * Handle a logout request.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+
+            if ($user) {
+                // Revoke the user's token
+                $user->token()->revoke();
+
+                return $this->successResponse(null, 'messages.user.logout', 200);
+            } else {
+                return $this->errorResponse('messages.error.logout.unauthenticated', 401);
+            }
+        } catch (\Exception $e) {
+            return $this->errorResponse('messages.error.default', 500);
+        }
+    }
+
 }
