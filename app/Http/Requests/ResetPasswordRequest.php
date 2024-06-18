@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Lang;
 
-class RegisterRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +22,10 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:50'],
-            'email' => ['required', 'email', 'max:50', 'unique:users'],
-            'profile_url' => ['nullable','string'],
-            'phone_no' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'string', 'min:8', 'confirmed']
+            'password' => 'required|string|min:8|confirmed',
+            'token' => 'required|string',
+            'uuid' => 'required|string'
+
         ];
     }
 
@@ -38,6 +36,6 @@ class RegisterRequest extends FormRequest
      */
     public function messages(): array
     {
-        return Lang::get('validations');
+        return __('validations.password');
     }
 }

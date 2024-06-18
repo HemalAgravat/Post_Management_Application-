@@ -48,6 +48,8 @@ class Handler extends ExceptionHandler
             //
         });
 
+        // Render the given validation exception.
+
         $this->renderable(function (ValidationException $e) {
             return $this->validationError($e->validator, 'messages.validation.failed', 422);
         });

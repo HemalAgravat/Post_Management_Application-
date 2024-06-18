@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Mail\SendMail;
+use App\Models\PasswordResetToken;
 use App\Models\User;
 use App\Traits\JsonResponseTrait;
+use DateTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -171,4 +175,101 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Handle the request for password reset.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        try {
+
+            $request->validated();
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                $errorMessage = 'messages.forgot_password.user_not_found';
+                $statusCode = 404;
+            } elseif ($user->email_verified_at == null) {
+                $errorMessage = 'messages.forgot_password.email_not_verified';
+                $statusCode = 400;
+            } else {
+                $token = Str::random(20);
+                PasswordResetToken::updateOrInsert([
+                    'email' => $user->email,
+                ], [
+                    'token' => $token,
+                    'created_at' => now(),
+                ]);
+
+                $data = [
+                    'resetLink' => "http://127.0.0.1:8000/api/reset-password?token=$token&uuid=$user->uuid_column"
+                ];
+                $view = 'Mail.forgotpasswordemail';
+                $subject = 'Reset Password';
+                Mail::to($user)->queue(new SendMail($view, $subject, $data));
+
+                return $this->successResponse(null, 'messages.forgot_password.reset_link_sent');
+            }
+            return $this->errorResponse($errorMessage, $statusCode);
+        } catch (\Exception $th) {
+            return $this->errorResponse("error:" . $th->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Display the reset password form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse
+     */
+    public function resetPasswordForm(Request $request)
+    {
+        try {
+            $created = PasswordResetToken::where('token', $request->token)->first();
+            if (!$created) {
+                $errorMessage = 'messages.reset_password.invalid_token';
+                $statusCode = 400;
+            } else {
+                $createdAt = new DateTime($created->created_at);
+                $createdAt->modify('+2 hours');
+                if (new DateTime() > $createdAt) {
+                    $errorMessage = 'messages.reset_password.expired_token';
+                    $statusCode = 400;
+                } else {
+                    $data = $request->all();
+                    return view('resetpasswordform', compact('data'));
+                }
+            }
+            return $this->errorResponse($errorMessage, $statusCode);
+        } catch (\Throwable $th) {
+            return $this->errorResponse('error: ' . $th->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Reset the user's password.
+     *
+     * @param ResetPasswordRequest $request
+     * @return \Illuminate\Http\JsonResponse .
+     */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        try {
+            $request->validated();
+
+            $user = User::where('uuid_column', $request->uuid)->first();
+            if (Hash::check($request->password, $user->password)) {
+                return $this->errorResponse('messages.reset_password.password_same_as_old', 400);
+            }
+            $user->password = Hash::make($request->password);
+            $user->save();
+            PasswordResetToken::where('token', $request->token)->delete();
+            return $this->successResponse(null, 'messages.reset_password.password_reset_success', 200);
+
+        } catch (\Throwable $th) {
+            return $this->errorResponse('error: ' . $th->getMessage(), 500);
+        }
+    }
 }

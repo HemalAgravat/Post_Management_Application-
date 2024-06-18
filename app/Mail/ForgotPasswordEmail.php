@@ -9,24 +9,27 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendMail extends Mailable
+/**
+ * Summary of ForgotPasswordEmail
+ *
+ */
+class ForgotPasswordEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $view;
-    public $subject;
-    public $data;
-
+    public $token;
+    public $uuid;
+    public $resetLink;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($view, $subject ,$data)
+    public function __construct($token, $uuid)
     {
-        $this->view = $view;
-        $this->subject = $subject;
-        $this->data = $data;
+        $this->token = $token;
+        $this->uuid = $uuid;
+        $this->resetLink = 'http://127.0.0.1:8000/api/reset-password?token=' . $this->token . '&uuid=' . $this->uuid;
     }
+
 
     /**
      * Get the message envelope.
@@ -34,7 +37,7 @@ class SendMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->subject,
+            subject: 'Forgot Password Email',
         );
     }
 
@@ -44,7 +47,7 @@ class SendMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: $this->view,
+            view: 'Mail.forgotpasswordemail',
         );
     }
 
@@ -57,5 +60,4 @@ class SendMail extends Mailable
     {
         return [];
     }
-
 }

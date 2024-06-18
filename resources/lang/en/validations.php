@@ -2,29 +2,29 @@
 
 return [
     'name' => [
-        'required' => 'The name field is required for registration.',
-        'string' => 'The name must be a string for registration.',
+        'required' => 'The name field is required.',
+        'string' => 'The name must be a string.',
         'max' => [
-            'string' => 'The name may not be greater than :max characters for registration.',
+            'string' => 'The name may not be greater than :max characters.',
         ],
     ],
     'email' => [
-        'required' => 'The email field is required for registration.',
-        'email' => 'The email must be a valid email address for registration.',
+        'required' => 'The email field is required.',
+        'email' => 'The email must be a valid email address.',
         'max' => [
-            'string' => 'The email may not be greater than :max characters for registration.',
+            'string' => 'The email may not be greater than :max characters.',
         ],
-        'unique' => 'The email has already been taken for registration.',
+        'unique' => 'The email has already been taken.',
     ],
     'phone_no' => [
-        'required' => 'The phone number field is required for registration.',
-        'string' => 'The phone number must be a string for registration.',
-        'max' => 'The phone number may not be greater than :max characters for registration.',
+        'required' => 'The phone number field is required.',
+        'string' => 'The phone number must be a string.',
+        'max' => 'The phone number may not be greater than :max characters.',
     ],
     'password' => [
-        'required' => 'The password field is required for registration.',
-        'string' => 'The password must be a string for registration.',
-        'min' => 'The password must be at least :min characters for registration.',
-        'confirmed' => 'The password confirmation does not match for registration.',
+        'required' => 'The password field is required.',
+        'string' => 'The password must be a string.',
+        'min' => 'The password must be at least :min characters.',
+        'confirmed' => 'The password confirmation does not match.',
     ],
 ];

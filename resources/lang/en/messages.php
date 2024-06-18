@@ -20,6 +20,11 @@ return [
         ],
     ],
 
+
+    'validation' => [
+        'failed' => 'Validation failed.',
+    ],
+
     'post_messages' => [
         'success' => 'Post Created Successfully.',
         'error' => 'Post not Created, something went wrong.',
@@ -38,5 +43,19 @@ return [
             'image' => 'The :attribute must be an image.',
             'in' => 'The selected :attribute is invalid.',
         ],
-    ]
+    ],
+
+    'forgot_password' => [
+        'user_not_found' => 'User not found!',
+        'email_not_verified' => 'Email not verified !',
+        'reset_link_sent' => 'Reset link sent to your email!',
+    ],
+
+    'reset_password' => [
+        'invalid_token' => 'Invalid Token',
+        'expired_token' => 'Token Expired Request Again link.',
+        'password_same_as_old' => 'New password cannot be the same as the old password',
+        'password_reset_success' => 'Password reset successfully!',
+    ],
+
 ];

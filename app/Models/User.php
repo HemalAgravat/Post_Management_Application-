@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    
+
     /**
      * table
      *
@@ -50,7 +50,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'uuid_column' => 'uuid', // Cast 'uuid_column' to a UUID
+        'uuid_column' => 'string', // Cast 'uuid_column' to a string
     ];
 
     public function posts()

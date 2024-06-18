@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Lang;
 
-class LoginRequest extends FormRequest
+class ForgotPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +22,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'max:50'],
-            'password' => ['required', 'string']
+            'email' => 'required|email',
         ];
     }
 
@@ -35,6 +33,6 @@ class LoginRequest extends FormRequest
      */
     public function messages(): array
     {
-        return Lang::get('validations');
+        return __('validations.email');
     }
 }
