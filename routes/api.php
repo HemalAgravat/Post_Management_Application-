@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Post\PostController;
+use App\Http\Controllers\Api\Post\PostController;
 
 /*
 |--------------------------------------------------------------------------
