@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,13 +60,15 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Reset Your Password</h1>
-        <p>Click the button below to reset your password:</p>
-        <a href="{{ $resetLink }}" class="reset-link">Reset Password</a>
-        <p>If you didn't request a password reset, you can ignore this message.</p>
-        <p>Thank you!</p>
+        <h1>{{ __('labels.forgotpasswordemail.reset_password') }}</h1>
+        <p>{{ __('labels.forgotpasswordemail.click_link_below') }}</p>
+        <a href="{{ $data['resetLink'] }}" class="reset-link">{{ __('labels.forgotpasswordemail.reset_password') }}</a>
+        <p>{{ __('labels.forgotpasswordemail.password_ignore') }}</p>
+        <p>{{ __('labels.forgotpasswordemail.thank_you') }}</p>
     </div>
 </body>
+
 </html>
