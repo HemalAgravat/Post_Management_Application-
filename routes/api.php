@@ -25,4 +25,4 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->delete('/logout', [AuthController::class, 'logout']);
 Route::get('sendemail/verifyEmail/{token}', [AuthController::class, 'verifyEmail'])->name('emailvarification');
 Route::resource('/posts',PostController::class)->middleware('auth:api');
-
+Route::post('posts/{uuid}/like', [PostController::class, 'like_post'])->middleware('auth:api');
