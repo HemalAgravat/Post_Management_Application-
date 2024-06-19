@@ -27,4 +27,7 @@ return [
         'min' => 'The password must be at least :min characters for registration.',
         'confirmed' => 'The password confirmation does not match for registration.',
     ],
+    'comment_message'=>[
+        'required'=>'comment field is require',
+    ]
 ];

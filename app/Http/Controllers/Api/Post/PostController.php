@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Traits\JsonResponseTrait;
 use App\Http\Requests\PostAddRequest;
 use App\Http\Requests\PostEditRequest;
+use Illuminate\Support\Facades\Auth;
 
 
 /**
@@ -29,27 +31,20 @@ class PostController extends Controller
     public function index()
     {
         try {
-            $posts=Post::where('status',"1")->get();
+            $posts = Post::where('status', "1")->get();
 
-            if($posts->isEmpty()){
-                return $this->successResponse([],'messages.post_messages.not_found',404);
+            if ($posts->isEmpty()) {
+                return $this->successResponse([], 'messages.post_messages.not_found', 404);
             }
 
-            return $this->successResponse($posts,'messages.post_messages.fetched',200);
-        } catch(\Exception $e) {
+            return $this->successResponse($posts, 'messages.post_messages.fetched', 200);
+        } catch (\Exception $e) {
 
-            return $this->errorResponse("error".$e->getMessage());
+            return $this->errorResponse("error" . $e->getMessage());
 
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created post in storage.
@@ -62,10 +57,10 @@ class PostController extends Controller
 
         $validated = validator($request->all());
 
-        if($validated->fails()){
-            return $this->validationError($validated,'messages.validation.failed');
+        if ($validated->fails()) {
+            return $this->validationError($validated, 'messages.validation.failed');
         }
-    
+
         // Handle file uploads
         $uploadedImages = [];
         if ($request->hasFile('images')) {
@@ -75,10 +70,10 @@ class PostController extends Controller
                 $uploadedImages[] = $name;
             }
         }
-    
+
         try {
             // Create the post
-            $user=auth()->user();
+            $user = auth()->user();
             $post = Post::create([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -87,30 +82,16 @@ class PostController extends Controller
                 'post_type' => $request->post_type
             ]);
 
-            return $this->successResponse($post,'messages.post_messages.success',201);
+            return $this->successResponse($post, 'messages.post_messages.success', 201);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
-            return $this->errorResponse("error".$e->getMessage());
+            return $this->errorResponse("error" . $e->getMessage());
 
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified post in storage.
@@ -123,8 +104,8 @@ class PostController extends Controller
         // Validate the request data
         $validated = validator($request->all());
 
-        if($validated->fails()){
-            return $this->validationError($validated,'messages.validation.failed');
+        if ($validated->fails()) {
+            return $this->validationError($validated, 'messages.validation.failed');
         }
 
         // Array to store paths of uploaded images (if any)
@@ -140,19 +121,19 @@ class PostController extends Controller
         }
 
         try {
-            
+
             $post = Post::where('uuid_column', $uuid)->first();
             $user = auth()->user();
 
             if (!$post) {
 
-                $errorMessage="messages.post_messages.post_not_found";
-                $statusCode=404;
+                $errorMessage = "messages.post_messages.post_not_found";
+                $statusCode = 404;
 
             } elseif ($post->user_id !== $user->id) {
 
-                $errorMessage="messages.post_messages.user_not_owns";
-                $statusCode=403;
+                $errorMessage = "messages.post_messages.user_not_owns";
+                $statusCode = 403;
 
             } else {
                 // Retrieve the existing images array from the database
@@ -176,22 +157,44 @@ class PostController extends Controller
                 $post->update(array_merge($request->all(), ['images' => $mergedImages]));
 
             }
-            
-            return isset($errorMessage)?$this->errorResponse($errorMessage, $statusCode):$this->successResponse($post, 'messages.post_messages.update', 200);
+
+            return isset($errorMessage) ? $this->errorResponse($errorMessage, $statusCode) : $this->successResponse($post, 'messages.post_messages.update', 200);
 
         } catch (\Exception $e) {
 
-            return $this->errorResponse("error".$e->getMessage());
+            return $this->errorResponse("error" . $e->getMessage());
 
         }
     }
 
 
     /**
-     * Remove the specified resource from storage.
+     * Summary of addComment
+     * @param \App\Http\Requests\CommentRequest $request
+     * @param string $uuid
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function addComment(CommentRequest $request, string $uuid)
     {
-        //
+
+        try {
+            $request->validated();
+            $post = Post::where('uuid_column', $uuid)->firstOrFail();
+            $comment = $post->comments()->create([
+                'user_id' => Auth::id(),
+                'content' => $request->content,
+            ]);
+            $data = [
+                "id" => $comment['id'],
+                "post_id" => $comment['post_id'],
+                "user_id" => $comment['user_id'],
+                "comment" => $request->content,
+                "created_at" => $comment['created_at'],
+                "updated_at" => $comment['updated_at']
+            ];
+            return $this->successResponse($data, 'messages.comment_messages', 201);
+        } catch (\Exception $e) {
+            return $this->errorResponse("error" . $e->getMessage(), 500);
+        }
     }
 }

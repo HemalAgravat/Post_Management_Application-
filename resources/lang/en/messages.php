@@ -1,13 +1,19 @@
 <?php
+
+use App\Models\Comment;
+
 return [
     'user' => [
         'register' => 'User registered successfully. Please verify your email.',
         'login' => 'Login successful',
         'logout' => 'Logout successful',
+        'user_profile'=>'User Profile Details',
+        
     ],
 
     'error' => [
         'default' => 'An error occurred!',
+        'unauthenticated'=> 'User not authenticated',
 
         'login' => [
             'invalid_credentials' => 'Invalid credentials',
@@ -38,5 +44,11 @@ return [
             'image' => 'The :attribute must be an image.',
             'in' => 'The selected :attribute is invalid.',
         ],
-    ]
-];
+    ],
+    'validation' =>[
+        'failed' => 'Validation Failed'
+    ],
+    'comment_messages'=>[
+        'comment'=> 'Comment added successfully'
+    ],
+    ];
