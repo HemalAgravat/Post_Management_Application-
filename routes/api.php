@@ -25,4 +25,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->delete('/logout', [AuthController::class, 'logout']);
 Route::get('sendemail/verifyEmail/{token}', [AuthController::class, 'verifyEmail'])->name('emailvarification');
 Route::resource('/posts',PostController::class)->middleware('auth:api');
-
+Route::post('/posts/{uuid}/comments', [PostController::class, 'addComment'])->middleware('auth:api');
+Route::middleware('auth:api')->get('/user', [AuthController::class, 'getUserProfile']);
