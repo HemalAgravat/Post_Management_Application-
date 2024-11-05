@@ -16,7 +16,7 @@ class Like extends Model
     protected $fillable = ['post_id','user_id','uuid_column'];
 
     protected $casts = [
-        'uuid_column' => 'uuid',
+        'uuid_column' => 'string',
     ];
 
     public $incrementing = true;

@@ -34,6 +34,7 @@ return [
         'fetched' => 'Posts feteched succefully.',
         'update' => 'Post updated successfully.',
         'user_not_owns' => 'User does not owns the post.',
+        'post_like' => 'post liked successfully',
 
         'post_validation' => [
             'required' => 'The :attribute field is required.',

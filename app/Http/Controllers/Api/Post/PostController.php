@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Like;
 use App\Traits\JsonResponseTrait;
 use App\Http\Requests\PostAddRequest;
 use App\Http\Requests\PostEditRequest;
@@ -195,6 +196,29 @@ class PostController extends Controller
             return $this->successResponse($data, 'messages.comment_messages', 201);
         } catch (\Exception $e) {
             return $this->errorResponse("error" . $e->getMessage(), 500);
+        }
+    }
+
+    public function like_post(string $uuid)
+    {
+        $user=auth()->user();
+        try{
+            $post=Post::where('uuid_column',$uuid)->first();
+            $liked=Like::where('post_id',$post->id)->where('user_id',$user->id)->exists();
+            if($liked){
+                $likes_count = Like::where('post_id', $post->id)->count();
+                    
+                return $this->successResponse(['likes_count' => $likes_count],'messages.post_messages.post_like');
+            }else{
+                Like::create([
+                    'post_id'=>$post->id,
+                    'user_id'=>$user->id
+                ]);
+                $likes_count = Like::where('post_id', $post->id)->count();
+                return $this->successResponse(['likes_count' => $likes_count],'messages.post_messages.post_like');
+            }
+        } catch (\Exception $e){
+            return $this->errorResponse("error".$e->getMessage());
         }
     }
 }
