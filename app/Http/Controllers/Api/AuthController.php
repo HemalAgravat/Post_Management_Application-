@@ -171,4 +171,21 @@ class AuthController extends Controller
         }
     }
 
+    public function getUserProfile()
+    {
+        try {
+            $user = auth()->user();
+
+            $userDetails = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ];
+            return $this->successResponse($userDetails, 'messages.user.user_profile');
+        } catch (\Exception $e) {
+            return $this->errorResponse('messages.error.default' . $e->getMessage(), 500);
+        }
+    }
 }
